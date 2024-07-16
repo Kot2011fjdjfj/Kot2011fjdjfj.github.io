@@ -108,7 +108,7 @@
 
 <script>
     const app = document.getElementById('app');
-    let posts = [];
+    let posts = JSON.parse(localStorage.getItem('posts')) || [];
 
     function openModal() {
         const modal = document.getElementById('myModal');
@@ -124,35 +124,15 @@
         const imageUrl = document.getElementById('imageUrlInput').value;
         if (!imageUrl) return;
 
-        fetch('/upload', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ url: imageUrl })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                alert(data.error);
-            } else {
-                alert(data.message);
-                loadPosts();
-            }
-        })
-        .catch(error => console.error('Error:', error));
+        const post = {
+            imageUrl: imageUrl,
+            reactions: { like: 0, dislike: 0 }
+        };
 
+        posts.unshift(post); // Add new post to the beginning of the array
+        localStorage.setItem('posts', JSON.stringify(posts));
+        renderPosts();
         closeModal();
-    }
-
-    function loadPosts() {
-        fetch('/images')
-            .then(response => response.json())
-            .then(data => {
-                posts = data;
-                renderPosts();
-            })
-            .catch(error => console.error('Error:', error));
     }
 
     function renderPosts() {
@@ -172,6 +152,7 @@
             likeButton.innerText = `👍 ${post.reactions.like}`;
             likeButton.onclick = () => {
                 post.reactions.like++;
+                localStorage.setItem('posts', JSON.stringify(posts));
                 renderPosts();
             };
             reactionsDiv.appendChild(likeButton);
@@ -180,6 +161,7 @@
             dislikeButton.innerText = `👎 ${post.reactions.dislike}`;
             dislikeButton.onclick = () => {
                 post.reactions.dislike++;
+                localStorage.setItem('posts', JSON.stringify(posts));
                 renderPosts();
             };
             reactionsDiv.appendChild(dislikeButton);
@@ -189,7 +171,7 @@
         });
     }
 
-    loadPosts();
+    renderPosts();
 </script>
 
 </body>
