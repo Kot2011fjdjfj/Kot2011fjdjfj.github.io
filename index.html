@@ -142,6 +142,7 @@
         // For simplicity in this example, we'll just return the original URL
         return imageUrl;
     }
+
     function renderPosts() {
         app.innerHTML = '';
         posts.forEach(post => {
@@ -156,7 +157,7 @@
             reactionsDiv.classList.add('reactions');
 
             const likeButton = document.createElement('button');
-            likeButton.innerText = 👍 ${post.reactions.like};
+            likeButton.innerText = `👍 ${post.reactions.like}`;
             likeButton.onclick = () => {
                 post.reactions.like++;
                 renderPosts();
@@ -164,7 +165,7 @@
             reactionsDiv.appendChild(likeButton);
 
             const dislikeButton = document.createElement('button');
-            dislikeButton.innerText = 👎 ${post.reactions.dislike};
+            dislikeButton.innerText = `👎 ${post.reactions.dislike}`;
             dislikeButton.onclick = () => {
                 post.reactions.dislike++;
                 renderPosts();
